@@ -6,10 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Use this if you want to convert any string argument value to a custom type of your choice.
+ * Used to indicate an argument that takes no corresponding value. This can only be used with a boolean type field.
+ * If the flag appears in the command line arguments, the boolean field will be set to true, otherwise it's false.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface ArgumentConverter {
-    Class<? extends io.purplesheep.argeasy.converters.ArgumentConverter<?>> converter();
+public @interface FlagArgument {
 }
