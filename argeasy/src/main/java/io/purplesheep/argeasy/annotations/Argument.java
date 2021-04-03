@@ -11,7 +11,13 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Argument {
+
     boolean required() default false;
     char name() default Character.MIN_VALUE;
     String longName() default "";
+    ArgumentType type() default ArgumentType.KEY_VALUE;
+
+    enum ArgumentType {
+        FLAG, KEY_VALUE
+    }
 }

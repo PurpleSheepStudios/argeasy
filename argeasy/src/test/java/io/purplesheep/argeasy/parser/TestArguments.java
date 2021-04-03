@@ -1,7 +1,8 @@
 package io.purplesheep.argeasy.parser;
 
 import io.purplesheep.argeasy.annotations.Argument;
-import io.purplesheep.argeasy.annotations.FlagArgument;
+import io.purplesheep.argeasy.annotations.Argument.ArgumentType;
+
 
 public class TestArguments {
 
@@ -14,7 +15,7 @@ public class TestArguments {
     @Argument(name = 'r')
     private Boolean ready;
 
-    @FlagArgument
+    @Argument(type = ArgumentType.FLAG)
     private Boolean quiet;
 
     public String getName() {
