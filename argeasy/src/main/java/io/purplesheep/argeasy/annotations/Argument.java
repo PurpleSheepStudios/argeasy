@@ -12,4 +12,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface Argument {
     boolean required() default false;
+    char name() default Character.MIN_VALUE;
+    String longName() default "";
 }

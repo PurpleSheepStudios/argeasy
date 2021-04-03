@@ -12,4 +12,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface FlagArgument {
+    char name() default Character.MIN_VALUE;
+    String longName() default "";
 }
