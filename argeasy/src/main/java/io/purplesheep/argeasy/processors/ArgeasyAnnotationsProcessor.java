@@ -10,7 +10,7 @@ import java.util.Set;
 
 @SupportedAnnotationTypes("io.purplesheep.argeasy.annotations.*")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-public class ArgumentSpecificationProcessor extends AbstractProcessor {
+public class ArgeasyAnnotationsProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         return false;

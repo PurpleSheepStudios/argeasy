@@ -42,7 +42,7 @@
                     <target>1.8</target>
                     <annotationProcessors>
                         <annotationProcessor>
-                            io.purplesheep.argeasy.processors.ArgumentSpecificationProcessor
+                            io.purplesheep.argeasy.processors.ArgeasyAnnotationsProcessor
                         </annotationProcessor>
                     </annotationProcessors>
                 </configuration>
