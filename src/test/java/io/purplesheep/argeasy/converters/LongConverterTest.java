@@ -40,7 +40,7 @@ class LongConverterTest {
 
     @ParameterizedTest
     @ValueSource(longs = {Long.MIN_VALUE, 0, Long.MAX_VALUE})
-    void canConvertNonNegativeIntegerStrings(final Long actualLong) {
+    void canConvertNonNegativeLongStrings(final Long actualLong) {
         final Long convertedLong = unit.convert(actualLong.toString());
         assertEquals(actualLong, convertedLong);
     }
