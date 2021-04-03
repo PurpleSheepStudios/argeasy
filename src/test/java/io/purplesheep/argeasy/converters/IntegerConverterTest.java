@@ -3,11 +3,7 @@ package io.purplesheep.argeasy.converters;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -33,7 +29,7 @@ class IntegerConverterTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"bob", "10.0", "2345470O34", "10000,00"})
+    @ValueSource(strings = {"bob", "10.0", "10000,00"})
     void throwsIllegalArgumentExceptionWhenGivenNonIntegerValue(final String value) {
         assertThrows(IllegalArgumentException.class, () -> unit.convert(value));
     }
@@ -45,11 +41,9 @@ class IntegerConverterTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {-256, 0, 10, 999999999})
+    @ValueSource(ints = {Integer.MIN_VALUE, 0, Integer.MAX_VALUE})
     void canConvertNonNegativeIntegerStrings(final Integer integer) {
         final Integer convertedInteger = unit.convert(integer.toString());
         assertEquals(integer, convertedInteger);
     }
-
-
 }
