@@ -39,11 +39,9 @@ class IntegerConverterTest {
     }
 
     @Test
-    void performsIntegerOverflowWhenGivenMassiveIntegerString() {
-        // should be up to the programmer if they want to use larger data types
+    void throwsIllegalArgumentExceptionWhenGivenIntegerOutsideOfRange() {
         final String massiveInteger = "2147483648"; // one bigger than Integer.MAX_VALUE
-        final Integer convertedInteger = unit.convert(massiveInteger);
-        assertEquals(Integer.MIN_VALUE, convertedInteger);
+        assertThrows(IllegalArgumentException.class, () -> unit.convert(massiveInteger));
     }
 
     @ParameterizedTest
