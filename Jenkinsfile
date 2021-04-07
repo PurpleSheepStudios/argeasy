@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        docker { image 'maven:3-openjdk-8' }
+        docker { image 'maven:adoptopenjdk' }
     }
     stages {
         stage('Build') {
