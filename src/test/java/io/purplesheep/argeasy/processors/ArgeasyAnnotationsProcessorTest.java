@@ -10,18 +10,19 @@ import org.junit.jupiter.api.Test;
 
 import javax.tools.JavaFileObject;
 import java.io.File;
-import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Collections;
 
 import static com.google.testing.compile.CompilationSubject.assertThat;
 import static com.google.testing.compile.Compiler.javac;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class ArgeasyAnnotationsProcessorTest {
 
     @Test
-    void failCompilationWithErrorWhenUtilityArgumentAnnotationNotAccompaniedByTheArgumentAnnotation() throws URISyntaxException {
+    void failsCompilationWithErrorWhenUtilityArgumentAnnotationNotAccompaniedByTheArgumentAnnotation() throws URISyntaxException {
         JavaFileObject argAnnotationForgotten = JavaFileObjects.forResource("ArgumentAnnotationForgotten.java");
 
         Compilation compilation = compile(argAnnotationForgotten);
@@ -48,19 +49,20 @@ class ArgeasyAnnotationsProcessorTest {
                 .atColumn(5);
     }
 
-    private Compilation compile(final JavaFileObject argAnnotationForgotten) throws URISyntaxException {
-        final URI argeasyTestJarURI = ClassLoader.getSystemResource("argeasy-test-jar.jar").toURI();
-        final File argeasyJar = Paths.get(argeasyTestJarURI).toFile();
+    private Compilation compile(final JavaFileObject javaFileObject) throws URISyntaxException {
+        final URL argeasyTestJarURL = ClassLoader.getSystemResource("argeasy-test-jar.jar");
 
-        if (!argeasyJar.exists())
-            throw new IllegalStateException("Could not find argeasy jar. " +
+        if (argeasyTestJarURL == null)
+            fail("Could not find argeasy jar to add to classpath. " +
                     "It should have been generated as part of the maven generate " +
                     "test resources phase.");
+
+        final File argeasyJar = Paths.get(argeasyTestJarURL.toURI()).toFile();
 
         return javac()
                 .withProcessors(new ArgeasyAnnotationsProcessor())
                 .withClasspath(Collections.singletonList(argeasyJar))
-                .compile(argAnnotationForgotten);
+                .compile(javaFileObject);
     }
 
     private String getMissingArgumentMessage(Class<?> argumentUtilityClass) {
