@@ -9,7 +9,9 @@ import io.purplesheep.argeasy.annotations.ArgumentValidator;
 import org.junit.jupiter.api.Test;
 
 import javax.tools.JavaFileObject;
-import java.nio.file.Path;
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Collections;
 
@@ -19,7 +21,7 @@ import static com.google.testing.compile.Compiler.javac;
 class ArgeasyAnnotationsProcessorTest {
 
     @Test
-    void failCompilationWithErrorWhenUtilityArgumentAnnotationNotAccompaniedByTheArgumentAnnotation() {
+    void failCompilationWithErrorWhenUtilityArgumentAnnotationNotAccompaniedByTheArgumentAnnotation() throws URISyntaxException {
         JavaFileObject argAnnotationForgotten = JavaFileObjects.forResource("ArgumentAnnotationForgotten.java");
 
         Compilation compilation = compile(argAnnotationForgotten);
@@ -46,18 +48,18 @@ class ArgeasyAnnotationsProcessorTest {
                 .atColumn(5);
     }
 
-    private Compilation compile(final JavaFileObject argAnnotationForgotten) {
-        final String workingDirectory = System.getProperty("user.dir");
-        final String argeasyJar = "target/argeasy-1.0-SNAPSHOT-for-testing.jar";
-        final Path argeasyJarPath = Paths.get(workingDirectory, argeasyJar);
+    private Compilation compile(final JavaFileObject argAnnotationForgotten) throws URISyntaxException {
+        final URI argeasyTestJarURI = ClassLoader.getSystemResource("argeasy-test-jar.jar").toURI();
+        final File argeasyJar = Paths.get(argeasyTestJarURI).toFile();
 
-        if (!argeasyJarPath.toFile().exists())
+        if (!argeasyJar.exists())
             throw new IllegalStateException("Could not find argeasy jar. " +
-                    "It should have been generated as part of the maven test process");
+                    "It should have been generated as part of the maven generate " +
+                    "test resources phase.");
 
         return javac()
                 .withProcessors(new ArgeasyAnnotationsProcessor())
-                .withClasspath(Collections.singletonList(argeasyJarPath.toFile()))
+                .withClasspath(Collections.singletonList(argeasyJar))
                 .compile(argAnnotationForgotten);
     }
 
