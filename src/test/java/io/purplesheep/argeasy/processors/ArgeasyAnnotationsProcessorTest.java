@@ -49,6 +49,22 @@ class ArgeasyAnnotationsProcessorTest {
                 .atColumn(5);
     }
 
+    @Test
+    void errorWhenArgumentConverterDoesNotConvertToCorrectType() throws URISyntaxException {
+        JavaFileObject badArgumentConverter = JavaFileObjects.forResource("BadArgumentConverter.java");
+
+        Compilation compilation = compile(badArgumentConverter);
+
+        assertThat(compilation).failed();
+        assertThat(compilation).hadErrorCount(1);
+
+        assertThat(compilation)
+                .hadErrorContaining("Argument converter given for field anArgument returns Integer rather than Boolean")
+                .inFile(badArgumentConverter)
+                .onLine(7)
+                .atColumn(5);
+    }
+
     private Compilation compile(final JavaFileObject javaFileObject) throws URISyntaxException {
         final URL argeasyTestJarURL = ClassLoader.getSystemResource("argeasy-test-jar.jar");
 
