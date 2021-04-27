@@ -6,6 +6,7 @@ import io.purplesheep.argeasy.annotations.Argument;
 import io.purplesheep.argeasy.annotations.ArgumentConverter;
 import io.purplesheep.argeasy.annotations.ArgumentDescription;
 import io.purplesheep.argeasy.annotations.ArgumentValidator;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.tools.JavaFileObject;
@@ -49,6 +50,7 @@ class ArgeasyAnnotationsProcessorTest {
                 .atColumn(5);
     }
 
+    @Disabled
     @Test
     void errorWhenArgumentConverterDoesNotConvertToCorrectType() throws URISyntaxException {
         JavaFileObject badArgumentConverter = JavaFileObjects.forResource("BadArgumentConverter.java");
