@@ -50,6 +50,20 @@ class ArgeasyAnnotationsProcessorTest {
                 .atColumn(5);
     }
 
+    @Test
+    void failsCompilationWithErrorWhenFlagArgumentAnnotationNotOnABooleanType() throws URISyntaxException {
+        JavaFileObject flagOnBoolean = JavaFileObjects.forResource("FlagAnnotationOnBoolean.java");
+
+        Compilation compilation = compile(flagOnBoolean);
+
+        assertThat(compilation).failed();
+        assertThat(compilation)
+                .hadErrorContaining("Field is marked as a flag argument but is not a boolean")
+                .inFile(flagOnBoolean)
+                .onLine(11)
+                .atColumn(20);
+    }
+
     @Disabled
     @Test
     void errorWhenArgumentConverterDoesNotConvertToCorrectType() throws URISyntaxException {
