@@ -4,7 +4,6 @@ import com.google.auto.service.AutoService;
 import io.purplesheep.argeasy.annotations.Argument;
 import io.purplesheep.argeasy.annotations.ArgumentConverter;
 import io.purplesheep.argeasy.annotations.ArgumentValidator;
-import io.purplesheep.argeasy.converters.ArgConverter;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -67,11 +66,10 @@ public class ArgeasyAnnotationsProcessor extends AbstractProcessor {
 
                     // check that the type of argument converter is assignable to the type of the variable
                     // error if the converter does not directly implement the ArgConverter interface
-                    if (isSameType(annotationType, getTypeMirror(ArgConverter.class))) {
+                    if (isSameType(annotationType, getTypeMirror(ArgumentConverter.class))) {
                         final ArgumentConverter argumentConverter = annotatedElement.getAnnotation(ArgumentConverter.class);
 
-//                        TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(argumentConverter.converter().getCanonicalName());
-//                        annotationMirror.getElementValues().get(typeElement)
+                        // https://stackoverflow.com/questions/7687829/java-6-annotation-processing-getting-a-class-from-an-annotation#10167558
                     }
 
                 }

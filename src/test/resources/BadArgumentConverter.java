@@ -6,4 +6,16 @@ public class BadArgumentConverter {
     @Argument
     @ArgumentConverter(converter = IntegerConverter.class)
     private Boolean anArgument;
+
+    @Argument
+    @ArgumentConverter(converter = IntegerConverter.class)
+    private Number anotherArgument;
+
+    @Argument
+    @ArgumentConverter(converter = IntegerConverter.class)
+    private Integer exactArgument;
+
+    @Argument
+    @ArgumentConverter(converter = IntegerConverter.class)
+    private Integer unboxedArgument;
 }
