@@ -4,6 +4,7 @@ import com.google.auto.service.AutoService;
 import io.purplesheep.argeasy.annotations.Argument;
 import io.purplesheep.argeasy.annotations.ArgumentConverter;
 import io.purplesheep.argeasy.annotations.ArgumentValidator;
+import io.purplesheep.argeasy.converters.ArgConverter;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -13,7 +14,10 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+
+import static io.purplesheep.argeasy.annotations.Argument.ArgumentType.FLAG;
 
 /**
  * Performs the following checks
@@ -38,10 +42,8 @@ public class ArgeasyAnnotationsProcessor extends AbstractProcessor {
             for (final Element annotatedElement : annotatedElements) {
                 final List<? extends AnnotationMirror> annotationMirrors = annotatedElement.getAnnotationMirrors();
 
-                final Argument argumentInfo = annotatedElement.getAnnotation(Argument.class);
-
                 // check element has the @Annotation annotation
-                if (argumentInfo == null) {
+                if (annotatedElement.getAnnotation(Argument.class) == null) {
                     annotationMirrors.forEach(annotationMirror -> {
                         final String message = String.format("%s annotation used, but could not find %s on the same field",
                                 annotationMirror.getAnnotationType(), Argument.class.getName());
@@ -49,19 +51,44 @@ public class ArgeasyAnnotationsProcessor extends AbstractProcessor {
                     });
                 }
 
-                // check that if the argument type is of type FLAG, that the field is a boolean
-                if (argumentInfo != null && Argument.ArgumentType.FLAG.equals(argumentInfo.type())) {
-                    final TypeMirror booleanTypeMirror = getTypeMirror(Boolean.class);
-                    boolean elementIsABoolean = processingEnv.getTypeUtils().isAssignable(annotatedElement.asType(), booleanTypeMirror);
-                    if (!elementIsABoolean) {
-                        final String message = "Field is marked as a flag argument but is not a boolean";
-                        printAnnotationError(message, annotatedElement);
+                for (AnnotationMirror annotationMirror : annotationMirrors) {
+                    final TypeMirror annotationType = annotationMirror.getAnnotationType().asElement().asType();
+
+                    // make sure that arguments marked as type flag or assignable to a boolean
+                    if (isSameType(annotationType, getTypeMirror(Argument.class))) {
+                        final Argument argument = annotatedElement.getAnnotation(Argument.class);
+                        final TypeMirror booleanTypeMirror = getTypeMirror(Boolean.class);
+                        boolean elementIsABoolean = processingEnv.getTypeUtils().isAssignable(annotatedElement.asType(), booleanTypeMirror);
+                        if (argument.type().equals(FLAG) && !elementIsABoolean) {
+                            final String message = "Field is marked as a flag argument but is not a boolean";
+                            printAnnotationError(message, annotatedElement);
+                        }
                     }
+
+                    // check that the type of argument converter is assignable to the type of the variable
+                    // error if the converter does not directly implement the ArgConverter interface
+                    if (isSameType(annotationType, getTypeMirror(ArgConverter.class))) {
+                        final ArgumentConverter argumentConverter = annotatedElement.getAnnotation(ArgumentConverter.class);
+
+//                        TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(argumentConverter.converter().getCanonicalName());
+//                        annotationMirror.getElementValues().get(typeElement)
+                    }
+
                 }
 
             }
         }
         return false;
+    }
+
+    private boolean isSameType(TypeMirror type1, TypeMirror type2) {
+        return processingEnv.getTypeUtils().isSameType(type1, type2);
+    }
+
+    private Optional<? extends AnnotationMirror> findAnnotationMirror(final List<? extends AnnotationMirror> annotationMirrors, final Class<?> clazz) {
+        return annotationMirrors.stream()
+                .filter(annotationMirror -> processingEnv.getTypeUtils().isSameType(getTypeMirror(clazz), annotationMirror.getAnnotationType()))
+                .findAny();
     }
 
     private TypeMirror getTypeMirror(final Class<?> clazz) {
