@@ -17,5 +17,5 @@ public class BadArgumentConverter {
 
     @Argument
     @ArgumentConverter(converter = IntegerConverter.class)
-    private Integer unboxedArgument;
+    private int unboxedArgument;
 }

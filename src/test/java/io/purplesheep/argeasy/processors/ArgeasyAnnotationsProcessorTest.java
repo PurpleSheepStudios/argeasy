@@ -6,7 +6,6 @@ import io.purplesheep.argeasy.annotations.Argument;
 import io.purplesheep.argeasy.annotations.ArgumentConverter;
 import io.purplesheep.argeasy.annotations.ArgumentDescription;
 import io.purplesheep.argeasy.annotations.ArgumentValidator;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.tools.JavaFileObject;
@@ -64,7 +63,6 @@ class ArgeasyAnnotationsProcessorTest {
                 .atColumn(20);
     }
 
-    @Disabled
     @Test
     void errorWhenArgumentConverterDoesNotConvertToCorrectType() throws URISyntaxException {
         JavaFileObject badArgumentConverter = JavaFileObjects.forResource("BadArgumentConverter.java");
@@ -75,7 +73,7 @@ class ArgeasyAnnotationsProcessorTest {
         assertThat(compilation).hadErrorCount(1);
 
         assertThat(compilation)
-                .hadErrorContaining("Argument converter given for field anArgument returns Integer rather than Boolean")
+                .hadErrorContaining("Argument converter given for field anArgument returns java.lang.Integer rather than java.lang.Boolean")
                 .inFile(badArgumentConverter)
                 .onLine(7)
                 .atColumn(5);
